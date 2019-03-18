@@ -10,14 +10,14 @@ import configparser
 class DCMTKConan(ConanFile):
 
     name = "DCMTK"
-    version = "3.6.3"
+    version = "3.6.4"
     description = "Conan package for DCMTK library"
     url = "https://github.com/kramarb/conan-dcmtk"
     homepage = "https://dicom.offis.de/dcmtk.php.en"
     license = "https://support.dcmtk.org/docs/file_copyright.html"
     author = "Miha Orazem miha.orazem@gmail.com"
     settings = "os", "arch", "compiler", "build_type"
-    exports = ["CMakeLists.txt"] 
+    exports = ["CMakeLists.txt"]
     dcmtk_modules = [ "ofstd", "oflog", "dcmdata", "dcmimgle", "dcmimage", "dcmjpeg", "dcmjpls", "dcmtls", "dcmnet", "dcmsr", "dcmsign", "dcmwlm", "dcmqrdb", "dcmpstat", "dcmrt", "dcmiod", "dcmfg", "dcmseg", "dcmtract", "dcmpmap"]
     options = dict({
         "shared": [True, False],
@@ -62,14 +62,14 @@ class DCMTKConan(ConanFile):
         if self.settings.compiler != "Visual Studio":
             if self.options.fPIC:
                 cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"] = "ON"
-        
+
         enabled_modules = [module for module in self.dcmtk_modules if getattr(self.options, module) == True]
         cmake.definitions["DCMTK_MODULES"] = ';'.join(enabled_modules)
         cmake.configure(build_dir="build")
         cmake.build(target="install")
 
     def package(self):
-        self.copy("*", src="install")
+        self.copy("*", src="package")
 
     def package_info(self):
         self.env_info.CMAKE_PREFIX_PATH.append(self.package_folder)
